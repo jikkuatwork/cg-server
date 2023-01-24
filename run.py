@@ -8,6 +8,7 @@ load_dotenv()
 
 ntfy_token = os.environ["NTFY_TOKEN"]
 swap_file = os.environ["SWAP_FILE"]
+answer_file = os.environ["ANSWER_FILE"]
 email = os.environ["OAI_EMAIL"]
 password = os.environ["OAI_PASSWORD"]
 
@@ -18,6 +19,10 @@ def setup():
 api = setup()
 
 print("Ready.")
+
+def send_as_file(answer):
+    file = open(answer_file, "w")
+    file.write(answer)
 
 def send_as_notification(message):
     requests.get("https://ntfy.sh/{token}/publish?message={m}&priority=high&tags=robot".format(m=message, token=ntfy_token))
@@ -38,3 +43,4 @@ while True:
     response = api.send_message(topic)
     print(response['message'])
     send_as_notification((response['message']))
+    send_as_file((response['message']))
